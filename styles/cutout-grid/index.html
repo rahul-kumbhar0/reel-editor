@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>cutout-grid</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- cutout-grid: you, cut out, over a 2x2 grid of images that change together per idea.
+   Needs cutouts (segment.py) and images in img/ (see style.md for sourcing). Captions sit in a dark
+   box at the chest so they read over busy pictures. ---- */
+.grid{inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;opacity:0}
+.grid i{display:block;background-size:cover;background-position:center;background-color:#222}
+#cap{background:rgba(10,10,10,.82);padding:18px 30px;border-radius:14px;left:90px;right:90px;top:1210px;font-size:40px}
+.chip{display:none}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage" style="opacity:0"><img id="frame"></div>
+  <!-- one grid per idea; swap the four images per grid -->
+  <div class="grid" id="g1"><i style="background-image:url(img/1a.jpg),linear-gradient(135deg,#1b1b1b,#3a2a1a)"></i><i style="background-image:url(img/1b.jpg),linear-gradient(135deg,#3b2b1b,#8a4e18)"></i><i style="background-image:url(img/1c.jpg),linear-gradient(135deg,#1e3a5f,#2a7b4f)"></i><i style="background-image:url(img/1d.jpg),linear-gradient(135deg,#7a3a1a,#e8842a)"></i></div>
+  <div class="grid" id="g2"><i style="background-image:url(img/2a.jpg),linear-gradient(135deg,#222,#444)"></i><i style="background-image:url(img/2b.jpg),linear-gradient(135deg,#333,#666)"></i><i style="background-image:url(img/2c.jpg),linear-gradient(135deg,#111,#333)"></i><i style="background-image:url(img/2d.jpg),linear-gradient(135deg,#444,#888)"></i></div>
+  <div class="grid" id="g3"><i style="background-image:url(img/3a.jpg),linear-gradient(135deg,#2a1a3a,#5a2a6a)"></i><i style="background-image:url(img/3b.jpg),linear-gradient(135deg,#1a2a3a,#2a5a8a)"></i><i style="background-image:url(img/3c.jpg),linear-gradient(135deg,#3a3a1a,#8a8a2a)"></i><i style="background-image:url(img/3d.jpg),linear-gradient(135deg,#3a1a1a,#8a2a2a)"></i></div>
+  <div id="cutwrap" style="inset:0"><img id="cut"></div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: "cutout" };
+const T = { g1: 0, g2: at("Number 2"), g3: at("And number 3"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+function grid(id, t, a, b) { const el = R.$(id); const p = R.prog(t, a, 0.4) * (1 - R.prog(t, b, 0.4)); el.style.opacity = p; el.style.transform = `scale(${1 + 0.04 * R.prog(t, a, b - a)})`; }
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t);
+  R.dots("dots", t, 0.8, 0.8);
+  grid("g1", t, T.g1, T.g2); grid("g2", t, T.g2, T.g3); grid("g3", t, T.g3, T.cta);
+  R.$("g1").querySelectorAll("i").forEach((i, k) => { i.style.transform = `scale(${1.08 + 0.03 * Math.sin(t * 0.6 + k)})`; });
+  R.zoom("cut", t, [], { drift: 0.03 });
+  document.getElementById("cutwrap").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

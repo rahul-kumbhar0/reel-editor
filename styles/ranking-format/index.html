@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>ranking-format</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- ranking-format: tier-list reel. S-to-F table fills the top, cards drop into tiers as you
+   name them, you sit in a window at the bottom. Edit TIERS/ITEMS in the script. ---- */
+.tier{position:absolute;left:60px;width:960px;height:150px;display:flex;border-radius:16px;overflow:hidden;background:#161616;border:1.5px solid var(--line);opacity:0}
+.tier .l{width:150px;display:grid;place-items:center;font:900 70px var(--sans);color:#111}
+.tier .z{flex:1;display:flex;gap:14px;align-items:center;padding:0 18px}
+.item{position:absolute;width:260px;height:116px;border-radius:14px;background:#fff;color:#111;display:grid;place-items:center;font:800 34px var(--sans);letter-spacing:-1px;box-shadow:0 20px 40px rgba(0,0,0,.5);opacity:0;text-align:center;padding:0 12px}
+.ttl{left:0;right:0;top:120px;text-align:center;font:400 72px var(--serif);font-style:italic;color:#fff;letter-spacing:-2px;opacity:0}
+</style></head>
+<body><div id="stage">
+  <div class="grid-bg"></div>
+  <div class="ttl" id="ttl">where to apply, ranked</div>
+  <div id="tiers"></div><div id="items"></div>
+  <div class="footage pip" id="footage" style="left:60px;top:1200px;width:960px;height:640px;border-radius:36px"><img id="frame"></div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap" style="top:1700px;font-size:34px"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+// ---- edit these: tiers (top to bottom) and the items with the phrase that drops each one ----
+const TIERS = [["S", "#E8842A"], ["A", "#F2B268"], ["B", "#EDEBE4"], ["C", "#9A9A9F"], ["F", "#5E5E63"]];
+const ITEMS = [{ t: "referrals", tier: "S", at: "Pick 10" }, { t: "company careers page", tier: "A", at: "Number 2" }, { t: "LinkedIn, day one", tier: "A", at: "first 50" },
+  { t: "small project + link", tier: "S", at: "One small project" }, { t: "random portals", tier: "F", at: "1 rupee" }, { t: "200 cold applies", tier: "F", at: "200" }];
+const T = { cta: R.voiceEnd() + 0.4 }; window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+const top0 = 260, gap = 24;
+document.getElementById("tiers").innerHTML = TIERS.map(([l, c], i) => `<div class="tier" id="tier${l}" style="top:${top0 + i * (150 + gap)}px"><div class="l" style="background:${c}">${l}</div><div class="z"></div></div>`).join("");
+document.getElementById("items").innerHTML = ITEMS.map((it, i) => `<div class="item" id="it${i}">${it.t}</div>`).join("");
+const slot = {}; ITEMS.forEach((it, i) => { it.time = at(it.at); it.n = slot[it.tier] = (slot[it.tier] || 0); slot[it.tier]++; it.y = top0 + TIERS.findIndex(x => x[0] === it.tier) * (150 + gap) + 17; it.x = 60 + 150 + 18 + it.n * 274; });
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t); R.dots("dots", t, 0.8, 0.8);
+  R.words("ttl", t, 0.2, { stagger: 0.1 });
+  TIERS.forEach(([l], i) => R.rise("tier" + l, t, 0.9 + i * 0.12, { dy: 30 }));
+  ITEMS.forEach((it, i) => { const el = R.$("it" + i), p = R.ease.spring(R.prog(t, it.time, 0.5)); if (p > 0 && p < 1) R.cue("pop", it.time);
+    el.style.opacity = Math.min(1, p * 4); el.style.left = it.x + "px"; el.style.top = (it.y - (1 - p) * 300) + "px"; el.style.transform = `scale(${0.6 + 0.4 * p}) rotate(${(1 - p) * -8}deg)`; });
+  R.zoom("frame", t, [], { drift: 0.04 });
+  document.getElementById("footage").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

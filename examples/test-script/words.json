@@ -1,0 +1,467 @@
+{
+ "words": [
+  {
+   "text": "Most",
+   "start": 0.0,
+   "end": 0.32,
+   "type": "word"
+  },
+  {
+   "text": "freshers",
+   "start": 0.32,
+   "end": 0.88,
+   "type": "word"
+  },
+  {
+   "text": "apply",
+   "start": 0.88,
+   "end": 1.2,
+   "type": "word"
+  },
+  {
+   "text": "to",
+   "start": 1.2,
+   "end": 1.36,
+   "type": "word"
+  },
+  {
+   "text": "200",
+   "start": 1.36,
+   "end": 1.96,
+   "type": "word"
+  },
+  {
+   "text": "jobs",
+   "start": 2.0,
+   "end": 2.48,
+   "type": "word"
+  },
+  {
+   "text": "and",
+   "start": 2.48,
+   "end": 2.64,
+   "type": "word"
+  },
+  {
+   "text": "hear",
+   "start": 2.64,
+   "end": 3.04,
+   "type": "word"
+  },
+  {
+   "text": "nothing",
+   "start": 3.04,
+   "end": 3.44,
+   "type": "word"
+  },
+  {
+   "text": "back.",
+   "start": 3.44,
+   "end": 4.0,
+   "type": "word"
+  },
+  {
+   "text": "Here's",
+   "start": 4.0,
+   "end": 4.4,
+   "type": "word"
+  },
+  {
+   "text": "the",
+   "start": 4.4,
+   "end": 4.56,
+   "type": "word"
+  },
+  {
+   "text": "difference.",
+   "start": 4.56,
+   "end": 5.16,
+   "type": "word"
+  },
+  {
+   "text": "1",
+   "start": 5.28,
+   "end": 5.52,
+   "type": "word"
+  },
+  {
+   "text": "rupee",
+   "start": 5.52,
+   "end": 5.92,
+   "type": "word"
+  },
+  {
+   "text": "of",
+   "start": 5.92,
+   "end": 6.08,
+   "type": "word"
+  },
+  {
+   "text": "effort",
+   "start": 6.08,
+   "end": 6.4,
+   "type": "word"
+  },
+  {
+   "text": "on",
+   "start": 6.4,
+   "end": 6.56,
+   "type": "word"
+  },
+  {
+   "text": "a",
+   "start": 6.56,
+   "end": 6.64,
+   "type": "word"
+  },
+  {
+   "text": "random",
+   "start": 6.64,
+   "end": 7.04,
+   "type": "word"
+  },
+  {
+   "text": "portal",
+   "start": 7.04,
+   "end": 7.6,
+   "type": "word"
+  },
+  {
+   "text": "versus",
+   "start": 7.6,
+   "end": 8.0,
+   "type": "word"
+  },
+  {
+   "text": "a",
+   "start": 8.0,
+   "end": 8.08,
+   "type": "word"
+  },
+  {
+   "text": "million",
+   "start": 8.08,
+   "end": 8.4,
+   "type": "word"
+  },
+  {
+   "text": "on",
+   "start": 8.4,
+   "end": 8.56,
+   "type": "word"
+  },
+  {
+   "text": "the",
+   "start": 8.56,
+   "end": 8.72,
+   "type": "word"
+  },
+  {
+   "text": "right",
+   "start": 8.72,
+   "end": 8.96,
+   "type": "word"
+  },
+  {
+   "text": "one.",
+   "start": 8.96,
+   "end": 9.52,
+   "type": "word"
+  },
+  {
+   "text": "Number",
+   "start": 9.52,
+   "end": 9.92,
+   "type": "word"
+  },
+  {
+   "text": "1.",
+   "start": 9.92,
+   "end": 10.48,
+   "type": "word"
+  },
+  {
+   "text": "Contrast.",
+   "start": 10.48,
+   "end": 11.08,
+   "type": "word"
+  },
+  {
+   "text": "Stop",
+   "start": 11.36,
+   "end": 11.76,
+   "type": "word"
+  },
+  {
+   "text": "spraying.",
+   "start": 11.76,
+   "end": 12.36,
+   "type": "word"
+  },
+  {
+   "text": "Pick",
+   "start": 12.64,
+   "end": 12.96,
+   "type": "word"
+  },
+  {
+   "text": "10",
+   "start": 12.96,
+   "end": 13.28,
+   "type": "word"
+  },
+  {
+   "text": "companies",
+   "start": 13.28,
+   "end": 13.76,
+   "type": "word"
+  },
+  {
+   "text": "that",
+   "start": 13.76,
+   "end": 14.0,
+   "type": "word"
+  },
+  {
+   "text": "are",
+   "start": 14.0,
+   "end": 14.16,
+   "type": "word"
+  },
+  {
+   "text": "actually",
+   "start": 14.16,
+   "end": 14.56,
+   "type": "word"
+  },
+  {
+   "text": "hiring",
+   "start": 14.56,
+   "end": 15.12,
+   "type": "word"
+  },
+  {
+   "text": "this",
+   "start": 15.12,
+   "end": 15.28,
+   "type": "word"
+  },
+  {
+   "text": "week.",
+   "start": 15.28,
+   "end": 15.88,
+   "type": "word"
+  },
+  {
+   "text": "Number",
+   "start": 15.92,
+   "end": 16.32,
+   "type": "word"
+  },
+  {
+   "text": "2.",
+   "start": 16.32,
+   "end": 16.8,
+   "type": "word"
+  },
+  {
+   "text": "Speed.",
+   "start": 16.8,
+   "end": 17.4,
+   "type": "word"
+  },
+  {
+   "text": "The",
+   "start": 17.6,
+   "end": 17.76,
+   "type": "word"
+  },
+  {
+   "text": "first",
+   "start": 17.76,
+   "end": 18.0,
+   "type": "word"
+  },
+  {
+   "text": "50",
+   "start": 18.0,
+   "end": 18.48,
+   "type": "word"
+  },
+  {
+   "text": "applicants",
+   "start": 18.48,
+   "end": 19.08,
+   "type": "word"
+  },
+  {
+   "text": "get",
+   "start": 19.12,
+   "end": 19.36,
+   "type": "word"
+  },
+  {
+   "text": "red,",
+   "start": 19.36,
+   "end": 19.92,
+   "type": "word"
+  },
+  {
+   "text": "everyone",
+   "start": 19.92,
+   "end": 20.32,
+   "type": "word"
+  },
+  {
+   "text": "else",
+   "start": 20.32,
+   "end": 20.64,
+   "type": "word"
+  },
+  {
+   "text": "gets",
+   "start": 20.64,
+   "end": 20.96,
+   "type": "word"
+  },
+  {
+   "text": "archived.",
+   "start": 20.96,
+   "end": 21.56,
+   "type": "word"
+  },
+  {
+   "text": "And",
+   "start": 21.84,
+   "end": 22.0,
+   "type": "word"
+  },
+  {
+   "text": "number",
+   "start": 22.0,
+   "end": 22.32,
+   "type": "word"
+  },
+  {
+   "text": "3.",
+   "start": 22.32,
+   "end": 22.91,
+   "type": "word"
+  },
+  {
+   "text": "Proof.",
+   "start": 22.91,
+   "end": 23.51,
+   "type": "word"
+  },
+  {
+   "text": "One",
+   "start": 23.63,
+   "end": 23.95,
+   "type": "word"
+  },
+  {
+   "text": "small",
+   "start": 23.95,
+   "end": 24.35,
+   "type": "word"
+  },
+  {
+   "text": "project",
+   "start": 24.35,
+   "end": 24.75,
+   "type": "word"
+  },
+  {
+   "text": "beats",
+   "start": 24.75,
+   "end": 25.23,
+   "type": "word"
+  },
+  {
+   "text": "a",
+   "start": 25.23,
+   "end": 25.31,
+   "type": "word"
+  },
+  {
+   "text": "long",
+   "start": 25.31,
+   "end": 25.55,
+   "type": "word"
+  },
+  {
+   "text": "resume.",
+   "start": 25.55,
+   "end": 26.15,
+   "type": "word"
+  },
+  {
+   "text": "I",
+   "start": 26.35,
+   "end": 26.51,
+   "type": "word"
+  },
+  {
+   "text": "replaced",
+   "start": 26.51,
+   "end": 26.99,
+   "type": "word"
+  },
+  {
+   "text": "scrolling",
+   "start": 26.99,
+   "end": 27.47,
+   "type": "word"
+  },
+  {
+   "text": "with",
+   "start": 27.47,
+   "end": 27.71,
+   "type": "word"
+  },
+  {
+   "text": "building,",
+   "start": 27.71,
+   "end": 28.31,
+   "type": "word"
+  },
+  {
+   "text": "and",
+   "start": 28.35,
+   "end": 28.51,
+   "type": "word"
+  },
+  {
+   "text": "that",
+   "start": 28.51,
+   "end": 28.75,
+   "type": "word"
+  },
+  {
+   "text": "literally",
+   "start": 28.75,
+   "end": 29.23,
+   "type": "word"
+  },
+  {
+   "text": "changed",
+   "start": 29.23,
+   "end": 29.71,
+   "type": "word"
+  },
+  {
+   "text": "my",
+   "start": 29.71,
+   "end": 29.95,
+   "type": "word"
+  },
+  {
+   "text": "life.",
+   "start": 29.95,
+   "end": 30.3,
+   "type": "word"
+  }
+ ],
+ "text": "Most freshers apply to 200 jobs and hear nothing back. Here's the difference. 1 rupee of effort on a random portal versus a million on the right one. Number 1. Contrast. Stop spraying. Pick 10 companies that are actually hiring this week. Number 2. Speed. The first 50 applicants get red, everyone else gets archived. And number 3. Proof. One small project beats a long resume. I replaced scrolling with building, and that literally changed my life."
+}

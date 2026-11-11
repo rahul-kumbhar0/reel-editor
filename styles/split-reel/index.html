@@ -1,0 +1,96 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>split-reel</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- split-reel: face on top, animations below, full-screen windows ----
+   Top half (0-960): the footage, cover-cropped to the face. Bottom half (960-1920): an animation
+   stage per idea. On a key line the window takes the whole screen. */
+:root{--cap-top:780px}
+#footage{height:960px}
+#footage img{object-position:50% 20%}
+.stage2{left:0;top:960px;width:1080px;height:960px;background:var(--bg);overflow:hidden}
+.stage2 .grid-bg{position:absolute}
+.ttl{position:absolute;left:0;right:0;top:90px;text-align:center}
+.ttl .e{font:400 44px var(--serif);font-style:italic;color:var(--accent)}
+.ttl .h{font:900 108px/1 var(--sans);letter-spacing:-4px;color:var(--accent);text-transform:uppercase;margin-top:4px}
+.ttl .s{font:400 40px var(--serif);font-style:italic;color:#fff;margin-top:14px}
+.vsrow{position:absolute;left:60px;right:60px;top:430px;display:flex;align-items:center;gap:30px}
+.vsrow .box{flex:1;height:200px;border-radius:22px;background:#161616;border:1.5px solid var(--line);display:grid;place-items:center;text-align:center;opacity:0}
+.vsrow .box b{font:800 80px/1 var(--sans);letter-spacing:-3px;color:#fff}.vsrow .box small{display:block;font:600 22px var(--sans);color:var(--mute);letter-spacing:2px;margin-top:10px}
+.vsrow .box.dim{border-style:dashed;background:transparent}
+.strip{position:absolute;left:0;top:700px;display:flex;gap:16px;opacity:0}
+.strip i{display:block;width:210px;height:118px;border-radius:12px;background:linear-gradient(135deg,#2a2a2a,#444);position:relative;flex:none}
+.strip i::after{content:attr(data-v);position:absolute;left:12px;bottom:10px;font:700 20px var(--sans);color:var(--accent)}
+.list{position:absolute;left:90px;top:120px;right:90px}
+.list .row{display:flex;align-items:center;gap:26px;height:150px;border-bottom:1.5px solid var(--line);opacity:0}
+.list .row .n{font:400 48px var(--serif);font-style:italic;color:var(--accent);width:70px}
+.list .row .t{font:700 46px var(--sans);letter-spacing:-1px;color:#fff}.list .row .t small{display:block;font:500 28px var(--sans);color:var(--mute);margin-top:6px}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="stage2" id="stage2"><div class="grid-bg"></div>
+    <div class="scene" id="s_contrast">
+      <div class="ttl"><div class="e" id="e1">number one</div><div class="h" id="h1">Contrast</div><div class="s" id="s1">for example</div></div>
+      <div class="vsrow"><div class="box" id="b1"><div><b>₹1</b><small>ONE RUPEE</small></div></div><div class="vs" id="vs1" style="opacity:0">VS</div><div class="box" id="b2"><div><b>₹10L</b><small>THE RIGHT ONE</small></div></div></div>
+      <div class="strip" id="strip"><i data-v="₹1"></i><i data-v="₹100"></i><i data-v="₹1L"></i><i data-v="₹10L"></i><i data-v="₹1Cr"></i></div>
+    </div>
+    <div class="scene" id="s_steps"><div class="list">
+      <div class="row" id="r1"><div class="n">01</div><div class="t">Contrast<small>pick 10 companies hiring this week</small></div></div>
+      <div class="row" id="r2"><div class="n">02</div><div class="t">Speed<small>first 50 applicants get read</small></div></div>
+      <div class="row" id="r3"><div class="n">03</div><div class="t">Proof<small>one small project beats a long resume</small></div></div>
+    </div></div>
+  </div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const T = {
+  hook: at("200"), hookEnd: end("nothing back"), num1: at("Number 1"), contrast: at("Contrast"), example: at("1 rupee"),
+  vs: at("versus"), million: at("a million"), contrastEnd: end("this week"),
+  num2: at("Number 2"), num3: at("And number 3"), proof: at("Proof"), stepsEnd: end("resume"),
+  last: at("I replaced"), cta: R.voiceEnd() + 0.4,
+};
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({
+  scenes: [
+    { id: "s_contrast", s: T.example, e: T.contrastEnd + 0.3, enter: "up" },
+    { id: "s_steps", s: T.num2 - 0.2, e: T.stepsEnd + 0.3, enter: "up" },
+    { id: "s_cta", s: T.cta, e: 1e9, enter: "fade" },
+  ],
+  captions: { style: "chest", hide: [[T.cta, 1e9]] },
+});
+// the lower window takes the whole screen on the hook and on the final line
+const full = [{ t: 0, x: 0, y: 960, w: 1080, h: 960, r: 0 }, { t: T.hook - 0.1, d: 0.5, x: 0, y: 0, w: 1080, h: 1920, r: 0, o: 0 },
+  { t: T.hookEnd + 0.2, d: 0.5, x: 0, y: 960, w: 1080, h: 960, r: 0, o: 1 }];
+const face = [{ t: 0, x: 0, y: 0, w: 1080, h: 960 }, { t: T.hook - 0.1, d: 0.5, x: 0, y: 0, w: 1080, h: 1920 }, { t: T.hookEnd + 0.2, d: 0.5, x: 0, y: 0, w: 1080, h: 960 },
+  { t: T.last - 0.1, d: 0.5, x: 0, y: 0, w: 1080, h: 1920 }];
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t);
+  R.rect("footage", t, face); R.rect("stage2", t, full);
+  const tall = +document.getElementById("footage").style.height.replace("px", "") > 1400;
+  document.getElementById("cap").style.top = (tall ? 1230 : 780) + "px"; document.getElementById("chip").style.top = (tall ? 1358 : 905) + "px";
+  document.getElementById("frame").style.objectPosition = tall ? "50% 40%" : "50% 20%";
+  R.zoom("frame", t, [[T.hook, T.hookEnd, 1.1], [T.last, T.cta, 1.12]], { sfx: false, drift: 0.03 });
+  R.dots("dots", t, 0.8, 0.8);
+  // contrast window
+  R.words("e1", t, T.num1); R.words("h1", t, T.contrast, { dy: 40 }); R.rise("s1", t, T.example - 0.1);
+  R.pop("b1", t, T.example + 0.2); R.pop("vs1", t, T.vs, { rot: -10 }); R.pop("b2", t, T.million);
+  R.rise("strip", t, T.million + 0.6, { dy: 40 });
+  const s = document.getElementById("strip"); s.style.transform += ` translateX(${-60 - 120 * R.prog(t, T.million + 0.6, 6)}px)`;
+  // steps list
+  R.rise("r1", t, T.num2 - 0.1, { dy: 30 }); R.rise("r2", t, T.num2 + 0.1, { dy: 30 }); R.rise("r3", t, T.num3, { dy: 30 });
+  R.marker(document.querySelector("#r2 .t"), t, T.num2 + 0.3, 0.4); R.marker(document.querySelector("#r3 .t"), t, T.proof, 0.4);
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

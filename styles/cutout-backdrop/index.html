@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>cutout-backdrop</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- cutout-backdrop: you, cut out, over one full-screen image per idea (slow Ken Burns). Needs
+   cutouts + img/. A soft dark gradient at the bottom keeps the chest captions readable. ---- */
+.bd{inset:0;background-size:cover;background-position:center;opacity:0;transform-origin:50% 50%}
+.shade{inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%,transparent 55%,rgba(0,0,0,.6))}
+.kicker{left:60px;right:60px;top:170px;text-align:center;font:400 96px/1 var(--serif);font-style:italic;color:#fff;letter-spacing:-3px;text-shadow:0 10px 40px rgba(0,0,0,.7);opacity:0}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage" style="opacity:0"><img id="frame"></div>
+  <div class="bd" id="b1" style="background-image:url(img/1.jpg),linear-gradient(160deg,#1a1a1a,#4a2f16)"></div>
+  <div class="bd" id="b2" style="background-image:url(img/2.jpg),linear-gradient(160deg,#101a2a,#2a5a8a)"></div>
+  <div class="bd" id="b3" style="background-image:url(img/3.jpg),linear-gradient(160deg,#1a1210,#8a4e18)"></div>
+  <div class="bd" id="b4" style="background-image:url(img/4.jpg),linear-gradient(160deg,#141414,#333)"></div>
+  <div class="shade"></div>
+  <div id="cutwrap" style="inset:0"><img id="cut"></div>
+  <div class="kicker" id="k1">200 applications.</div>
+  <div class="kicker" id="k2">contrast</div>
+  <div class="kicker" id="k3">speed</div>
+  <div class="kicker" id="k4">proof</div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: "cutout" };
+const T = { b1: 0, k1: at("200"), b2: at("Number 1"), k2: at("Contrast"), b3: at("Number 2"), k3: at("Speed"), b4: at("And number 3"), k4: at("Proof"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+function backdrop(id, t, a, b) { const el = R.$(id); el.style.opacity = R.prog(t, a, 0.5) * (1 - R.prog(t, b, 0.5)); el.style.transform = `scale(${1.05 + 0.08 * R.prog(t, a, Math.max(1, b - a))})`; }
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t); R.dots("dots", t, 0.8, 0.8);
+  backdrop("b1", t, T.b1, T.b2); backdrop("b2", t, T.b2, T.b3); backdrop("b3", t, T.b3, T.b4); backdrop("b4", t, T.b4, T.cta);
+  R.words("k1", t, T.k1, { until: T.b2 - 0.2 }); R.words("k2", t, T.k2, { until: T.b3 - 0.2 }); R.words("k3", t, T.k3, { until: T.b4 - 0.2 }); R.words("k4", t, T.k4, { until: T.cta - 0.3 });
+  R.zoom("cut", t, [], { drift: 0.03 });
+  document.getElementById("cutwrap").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

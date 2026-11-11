@@ -1,0 +1,66 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>depth-ui</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- depth-ui: interfaces BEHIND your head, chest captions in front. Needs cutouts (segment.py).
+   Layers: dimmed footage -> UI cards -> cutout person -> captions. ---- */
+#footage img{filter:brightness(.55) saturate(.8)}
+#cutwrap{inset:0}
+.ui{position:absolute;opacity:0}
+.toggle-card{left:70px;top:230px;width:940px;height:560px;border-radius:40px;background:var(--cream);box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden}
+.toggle-card .half{position:absolute;top:0;bottom:0;width:50%;display:grid;place-items:center;font-size:90px}
+.toggle-card .half.r{right:0;background:#17171a;color:#fff}
+.toggle-card .badge{position:absolute;left:60px;top:60px;width:150px;height:150px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:800 70px var(--sans)}
+.steps{left:720px;top:360px;width:300px}
+.steps i{display:flex;align-items:center;gap:18px;height:76px;font:700 30px var(--sans);color:#fff;opacity:0}
+.steps i b{width:56px;height:56px;border-radius:50%;background:#222;border:2px solid var(--line);display:grid;place-items:center;font-size:26px}
+.steps i.on b{background:var(--accent);border-color:transparent}
+.num-card{left:90px;top:110px;width:900px;height:330px;border-radius:36px;background:#101010;border:1.5px solid var(--line);display:grid;place-items:center;text-align:center}
+.num-card b{font:800 160px/1 var(--sans);letter-spacing:-8px;color:#fff}.num-card small{display:block;font:500 34px var(--sans);color:var(--mute);margin-top:14px}
+.serif-big{left:0;right:0;top:1330px;text-align:center;font:400 120px/1 var(--serif);font-style:italic;color:var(--accent);letter-spacing:-4px;opacity:0;z-index:31}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="grid-bg" style="opacity:.5"></div>
+  <!-- UI behind the head -->
+  <div class="ui toggle-card" id="tc"><div class="half l">☀</div><div class="half r">☾</div><div class="badge" id="badge">1</div></div>
+  <div class="ui steps" id="steps"><i id="st1"><b>1</b>Contrast</i><i id="st2"><b>2</b>Speed</i><i id="st3"><b>3</b>Proof</i></div>
+  <div class="ui num-card" id="nc"><div><b id="ncn">200</b><small>applications, zero replies</small></div></div>
+  <!-- the person, cut out -->
+  <div id="cutwrap"><img id="cut"></div>
+  <div class="serif-big" id="sb">contrast</div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2" style="filter:none"></div>
+  </div>
+  <div id="cap"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: "cutout" };
+const T = { n200: at("200"), diff: at("Here's"), num1: at("Number 1"), contrast: at("Contrast"), contrastEnd: end("spraying"),
+  pick: at("Pick 10"), num2: at("Number 2"), num3: at("And number 3"), proof: at("Proof"), stepsEnd: end("resume"), last: at("I replaced"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t);
+  R.dots("dots", t, 0.8, 0.8);
+  // the whole stack (bg + ui + cutout) shares one gentle push-in so depth reads as one shot
+  R.zoom("frame", t, [[T.last, T.cta, 1.1]], { sfx: false, drift: 0.03 }); R.zoom("cut", t, [[T.last, T.cta, 1.1]], { sfx: false, drift: 0.03 });
+  const fade = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1; document.getElementById("cutwrap").style.opacity = fade; document.getElementById("footage").style.opacity = fade;
+  // UI beats: number card on the hook, toggle card on "contrast", steps list on 2 and 3
+  R.pop("nc", t, T.n200 - 0.05, { from: 0.9, until: T.diff });
+  R.pop("tc", t, T.num1, { from: 0.9, rot: -2, until: T.contrastEnd + 0.4 }); R.pop("badge", t, T.contrast, { from: 0.3 });
+  R.words("sb", t, T.contrast, { until: T.contrastEnd + 0.2 });
+  R.rise("steps", t, T.pick, { until: T.stepsEnd + 0.4 });
+  R.rise("st1", t, T.pick + 0.05); R.rise("st2", t, T.num2); R.rise("st3", t, T.num3);
+  document.getElementById("st1").classList.toggle("on", t >= T.pick); document.getElementById("st2").classList.toggle("on", t >= T.num2); document.getElementById("st3").classList.toggle("on", t >= T.num3);
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

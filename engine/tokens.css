@@ -1,0 +1,81 @@
+/* reel-edit-engine design tokens + shared components. Brand knobs live in :root — swap them per
+   brand (canwetrends / DirectApply / SuiteMigrate) and every style pack follows. */
+@font-face{font-family:Inter;font-weight:500;src:url(fonts/inter-latin-500-normal.woff2)}
+@font-face{font-family:Inter;font-weight:600;src:url(fonts/inter-latin-600-normal.woff2)}
+@font-face{font-family:Inter;font-weight:700;src:url(fonts/inter-latin-700-normal.woff2)}
+@font-face{font-family:Inter;font-weight:800;src:url(fonts/inter-latin-800-normal.woff2)}
+@font-face{font-family:Inter;font-weight:900;src:url(fonts/inter-latin-900-normal.woff2)}
+@font-face{font-family:Serif;font-style:italic;font-weight:400;src:url(fonts/instrument-serif-latin-400-italic.woff2)}
+@font-face{font-family:Mono;font-weight:500;src:url(fonts/jetbrains-mono-latin-500-normal.woff2)}
+@font-face{font-family:Mono;font-weight:700;src:url(fonts/jetbrains-mono-latin-700-normal.woff2)}
+
+:root{
+  --accent:#E8842A;            /* the one brand colour (Ajené orange). canwetrends: swap here */
+  --accent-ink:#1A1206;        /* text on accent */
+  --bg:#121212; --panel:#1A1A1B; --panel2:#232324; --line:rgba(255,255,255,.09);
+  --text:#F2F2F2; --mute:#9A9A9F; --dim:#5E5E63;
+  --cream:#ECEBE7; --cream-ink:#161616;
+  --glass:rgba(28,28,30,.72); --glass-line:rgba(255,255,255,.14);
+  --sans:Inter,system-ui,sans-serif; --serif:Serif,"Instrument Serif",Georgia,serif; --mono:Mono,ui-monospace,monospace;
+  --cap-top:1230px;            /* chest captions: just below the chin on a centred talking head */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+#stage>*{position:absolute}
+.scene{inset:0;display:none;opacity:0;will-change:transform,opacity}
+.scene>*{position:absolute}
+.layer{inset:0}
+
+/* ---------- footage ---------- */
+.footage{left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:#000}
+.footage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 40%}
+.footage.pip{box-shadow:0 40px 90px rgba(0,0,0,.6);border:2px solid var(--line)}
+#cut{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.dim-footage{inset:0;background:rgba(0,0,0,.45);opacity:0}
+.vig{inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 45%,rgba(0,0,0,.5) 100%)}
+
+/* ---------- chest captions ---------- */
+#cap{left:80px;right:80px;top:var(--cap-top);text-align:center;font:700 44px/1.25 var(--sans);letter-spacing:-.4px;color:#fff;z-index:30;
+  text-shadow:0 2px 8px rgba(0,0,0,.65),0 0 24px rgba(0,0,0,.4)}
+#cap span{display:inline-block;transition:none}
+#cap span.on{color:#fff}
+#cap.accent span.on{color:var(--accent)}
+#cap.big{font-size:56px;font-weight:800}
+.chip{left:50%;transform:translateX(-50%);top:calc(var(--cap-top) + 128px);width:30px;height:30px;border-radius:9px;background:var(--accent);z-index:30;
+  box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.chip::after{content:"";position:absolute;left:9px;top:9px;width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,.85)}
+
+/* ---------- typography ---------- */
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-1px}
+.h-serif{font:400 130px/1 var(--serif);font-style:italic;color:#fff;letter-spacing:-3px;text-align:center}
+.h-sans{font:800 64px/1.1 var(--sans);letter-spacing:-1.5px;color:#fff;text-align:center}
+.sub{font:600 34px/1.3 var(--sans);color:#fff;text-align:center;letter-spacing:-.3px}
+.eyebrow{font:400 40px var(--serif);font-style:italic;color:var(--accent);text-align:center}
+.big-num{font:800 150px/1 var(--sans);letter-spacing:-6px;color:#fff}
+.accent{color:var(--accent)}
+.mute{color:var(--mute)}
+
+/* ---------- cards ---------- */
+.card{background:var(--panel);border:1.5px solid var(--line);border-radius:28px;box-shadow:0 40px 90px rgba(0,0,0,.55);overflow:hidden;opacity:0}
+.card.cream{background:var(--cream);color:var(--cream-ink);border-color:rgba(0,0,0,.06)}
+.card.accent-bg{background:var(--accent);color:#fff;border-color:transparent}
+.glass{background:var(--glass);border:1.5px solid var(--glass-line);border-radius:26px;backdrop-filter:blur(18px);box-shadow:0 30px 70px rgba(0,0,0,.5);opacity:0}
+.counter{display:grid;place-items:center;font:800 88px/1 var(--sans);letter-spacing:-3px;color:#fff;background:#141414;border:1.5px solid var(--line);border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 24px 50px rgba(0,0,0,.5);opacity:0}
+.chapter{display:flex;align-items:center;gap:0;height:76px;background:#1D1D1E;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;opacity:0}
+.chapter .n{width:12px;height:100%;background:var(--accent);flex:none}
+.chapter .k{padding:0 26px;font:600 32px var(--sans);color:#fff}
+.chapter .t{flex:1;text-align:center;font:700 34px var(--sans);color:#fff;padding-right:40px}
+.pill{display:inline-flex;align-items:center;gap:12px;padding:12px 30px;border-radius:999px;background:var(--accent);color:#fff;font:700 40px var(--sans);letter-spacing:-.5px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.vs{width:120px;height:120px;border-radius:50%;background:#000;border:3px solid #333;display:grid;place-items:center;font:800 38px var(--sans);color:#fff}
+.dotfield{display:grid;gap:8px;padding:30px;opacity:0;pointer-events:none}
+.dotfield i{display:block;width:100%;aspect-ratio:1;border-radius:50%;background:var(--accent);opacity:.12}
+.glow{border-radius:50%;background:radial-gradient(circle,rgba(232,132,42,.55),rgba(232,132,42,0) 65%);filter:blur(30px);pointer-events:none}
+.grid-bg{inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1.5px,transparent 1.6px);background-size:34px 34px}
+.img{background-size:cover;background-position:center;border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.55);opacity:0}
+.img.polaroid{border:14px solid #fff;border-bottom-width:40px;border-radius:4px}
+.cta{left:0;right:0;top:0;text-align:center}
+.cta .l1{font:800 68px/1.1 var(--sans);letter-spacing:-2px;color:#fff}
+.cta .l2{display:inline-block;margin-top:16px;padding:10px 28px;border-radius:12px;background:var(--accent);color:#fff;font:700 44px var(--sans)}
+#grain{inset:-400px -400px 0 0;opacity:.05;mix-blend-mode:screen;pointer-events:none;z-index:40;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='400' height='400' filter='url(%23n)'/></svg>")}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>explainer-panel</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- explainer-panel: close-ups (hard punch-ins on the face) plus a bottom panel that explains
+   the current idea with a title, a one-line summary and a mini visual. Footage stays full frame;
+   captions move up when the panel is open. ---- */
+:root{--cap-top:1100px}
+.panel{left:60px;top:1300px;width:960px;height:540px;border-radius:34px;background:var(--glass);border:1.5px solid var(--glass-line);backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.6);padding:40px 46px;opacity:0}
+.panel .k{font:400 34px var(--serif);font-style:italic;color:var(--accent)}
+.panel .h{font:800 60px/1.05 var(--sans);letter-spacing:-2px;color:#fff;margin-top:6px}
+.panel .p{font:500 30px/1.35 var(--sans);color:var(--mute);margin-top:18px}
+.panel .bar{margin-top:28px;height:14px;border-radius:14px;background:rgba(255,255,255,.08);overflow:hidden}.panel .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:14px}
+.panel .row{display:flex;gap:16px;margin-top:26px}.panel .row b{flex:1;height:110px;border-radius:16px;background:#111;border:1.5px solid var(--line);display:grid;place-items:center;font:800 44px var(--sans);color:#fff;opacity:0}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="vig"></div>
+  <div class="panel" id="p1"><div class="k">01 / contrast</div><div class="h">₹1 of effort vs ₹10 lakh</div><div class="p">Stop spraying. Ten companies that are actually hiring this week.</div><div class="row"><b id="p1a">₹1</b><b id="p1b">₹10L</b></div></div>
+  <div class="panel" id="p2"><div class="k">02 / speed</div><div class="h">The first 50 get read</div><div class="p">Everyone after that gets archived. Apply the day it goes up.</div><div class="bar"><i id="p2bar"></i></div></div>
+  <div class="panel" id="p3"><div class="k">03 / proof</div><div class="h">One small project</div><div class="p">beats a long resume. Ship something with a link.</div><div class="row"><b id="p3a">1 project</b><b id="p3b" style="color:var(--mute)">long resume</b></div></div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const T = { hook: at("200"), hookEnd: end("nothing back"), p1: at("Number 1"), p1End: end("this week"), p2: at("Number 2"), fifty: at("first 50"), p2End: end("archived"),
+  p3: at("And number 3"), project: at("One small project"), resume: at("a long resume"), p3End: end("resume"), last: at("I replaced"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t); R.dots("dots", t, 0.8, 0.8);
+  const open = (t >= T.p1 && t < T.p1End + 0.4) || (t >= T.p2 && t < T.p2End + 0.4) || (t >= T.p3 && t < T.p3End + 0.4);
+  document.getElementById("cap").style.top = (open ? 1100 : 1230) + "px"; document.getElementById("chip").style.top = (open ? 1228 : 1358) + "px";
+  // close-ups: punch in on every "Number" and on the final line; the panel opens as the face is framed tighter
+  R.zoom("frame", t, [[T.hook, T.hookEnd, 1.12], [T.p1, T.p1End, 1.18, 50, 30], [T.p2, T.p2End, 1.18, 50, 30], [T.p3, T.p3End, 1.18, 50, 30], [T.last, T.cta, 1.22, 50, 32]], { sfx: true });
+  R.rise("p1", t, T.p1 + 0.1, { dy: 80, until: T.p1End + 0.3 }); R.pop("p1a", t, T.p1 + 0.5); R.pop("p1b", t, T.p1 + 0.8);
+  R.rise("p2", t, T.p2 + 0.1, { dy: 80, until: T.p2End + 0.3 }); document.getElementById("p2bar").style.width = 100 * R.prog(t, T.fifty, T.p2End - T.fifty) + "%";
+  R.rise("p3", t, T.p3 + 0.1, { dy: 80, until: T.p3End + 0.3 }); R.pop("p3a", t, T.project); R.pop("p3b", t, T.resume);
+  document.getElementById("footage").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

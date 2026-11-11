@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>split-screen-document</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- split-screen-document-plus-animations: a document on the left, you on the right. The doc
+   scrolls/highlights as you talk; small animations (checks, arrows, counters) land on the doc.
+   Put a screenshot of the real document in img/doc.png (or keep the generated mock). ---- */
+.doc{left:40px;top:160px;width:560px;height:1600px;border-radius:22px;background:#fff;color:#111;box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;opacity:0}
+.doc .in{padding:50px 44px;transition:none}
+.doc h3{font:800 40px/1.15 var(--sans);letter-spacing:-1px}
+.doc p{font:500 23px/1.5 var(--sans);color:#333;margin-top:18px}
+.doc p.hl{background:linear-gradient(transparent 45%,rgba(232,132,42,.45) 45%,rgba(232,132,42,.45) 92%,transparent 92%)}
+.doc .ck{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font:800 22px var(--sans);margin-right:10px;vertical-align:middle;opacity:0}
+.tag{position:absolute;left:640px;width:400px;padding:16px 22px;border-radius:14px;background:var(--panel);border:1.5px solid var(--line);font:600 26px var(--sans);color:#fff;opacity:0}
+</style></head>
+<body><div id="stage">
+  <div class="grid-bg"></div>
+  <div class="footage pip" id="footage" style="left:640px;top:160px;width:400px;height:1000px;border-radius:26px"><img id="frame"></div>
+  <div class="doc" id="doc"><div class="in" id="docin">
+    <h3>Fresher application checklist</h3>
+    <p id="l1"><span class="ck" id="c1">✓</span>Pick 10 companies that are actually hiring this week.</p>
+    <p id="l2"><span class="ck" id="c2">✓</span>Apply inside the first 50 — the day the post goes up.</p>
+    <p id="l3"><span class="ck" id="c3">✓</span>Lead with one small, shipped project (with a link).</p>
+    <p>Skip: mass-applying to 200 random portals, long resumes nobody reads past page one, waiting for replies instead of building.</p>
+  </div></div>
+  <div class="tag" id="t1" style="top:920px">① contrast</div><div class="tag" id="t2" style="top:1000px">② speed</div><div class="tag" id="t3" style="top:1080px">③ proof</div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap" style="left:640px;right:40px;top:1200px;font-size:34px;text-align:left"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const T = { doc: at("Here's"), c1: at("Pick 10"), c2: at("first 50"), c3: at("One small project"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t); R.dots("dots", t, 0.8, 0.8);
+  R.rise("doc", t, T.doc, { dy: 60 });
+  [["c1", "l1", "t1", T.c1], ["c2", "l2", "t2", T.c2], ["c3", "l3", "t3", T.c3]].forEach(([c, l, tg, a]) => { R.pop(c, t, a); R.$(l).classList.toggle("hl", t >= a); R.rise(tg, t, a + 0.15, { dy: 20 }); });
+  R.zoom("frame", t, [], { drift: 0.04 });
+  document.getElementById("footage").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

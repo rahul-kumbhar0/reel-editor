@@ -1,0 +1,143 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>glass-explainer</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- glass-explainer: dark explainer panel on glass cards above, you in a rounded window below ---- */
+#dots{inset:0;opacity:1}
+.panel{left:0;top:0;width:1080px;height:1180px}
+.counter.l{left:90px;top:330px;width:300px;height:200px}
+.counter.r{left:430px;top:330px;width:560px;height:200px}
+.bigword{left:60px;right:60px;top:900px;text-align:center;font:800 70px/1.1 var(--sans);letter-spacing:-2px;color:#fff;opacity:0}
+.bigword .serif{font-size:96px;color:var(--accent)}
+.gcard{left:90px;width:900px;padding:34px 40px;font:600 40px/1.3 var(--sans);color:#fff}
+.gcard small{display:block;font:500 28px var(--sans);color:var(--mute);margin-top:8px}
+</style></head>
+<body><div id="stage">
+  <div class="grid-bg" id="gridbg"></div>
+  <div class="glow" id="glow" style="left:290px;top:520px;width:500px;height:500px;opacity:0"></div>
+
+  <!-- footage: full screen, or docked into a rounded window while a panel is up -->
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="vig" id="vig"></div>
+
+  <!-- ===== explainer panels (one per idea) ===== -->
+  <div class="scene" id="s_contrast">
+    <div class="chapter" id="ch1" style="left:90px;top:200px;width:900px"><i class="n"></i><span class="k">01</span><span class="t">Contrast</span></div>
+    <div class="counter l" id="c1a">₹1</div>
+    <div class="counter r" id="c1b">₹0</div>
+    <div class="bigword" id="bw1">versus</div>
+    <div class="bigword" id="bw2"><span class="serif">contrast</span></div>
+  </div>
+
+  <div class="scene" id="s_speed">
+    <div class="chapter" id="ch2" style="left:90px;top:200px;width:900px"><i class="n"></i><span class="k">02</span><span class="t">Speed</span></div>
+    <div class="counter l" id="c2a" style="width:420px">first 50</div>
+    <div class="counter r" id="c2b" style="left:550px;width:440px;font-size:60px;color:var(--mute)">archived</div>
+    <div class="bigword" id="bw3"><span class="serif">speed</span></div>
+  </div>
+
+  <div class="scene" id="s_proof">
+    <div class="chapter" id="ch3" style="left:90px;top:200px;width:900px"><i class="n"></i><span class="k">03</span><span class="t">Proof</span></div>
+    <div class="glass gcard" id="g3a" style="top:330px">1 small project<small>shipped, with a link</small></div>
+    <div class="glass gcard" id="g3b" style="top:530px;color:var(--mute)">a long resume<small>nobody reads page two</small></div>
+    <div class="bigword" id="bw4"><span class="serif">proof</span></div>
+  </div>
+
+  <!-- small floating card over full-screen footage -->
+  <div class="glass gcard" id="g_pick" style="top:300px;opacity:0">Pick <b class="accent">10</b> companies<small>actually hiring this week</small></div>
+  <div class="counter" id="n200" style="left:340px;top:360px;width:400px;height:190px;font-size:120px">200</div>
+
+  <!-- end card -->
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+
+  <div id="cap"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const FULL = { x: 0, y: 0, w: 1080, h: 1920, r: 0 }, PIP = { x: 60, y: 1200, w: 960, h: 640, r: 36 };
+
+// ---- beats, anchored to the speaker's words ----
+const T = {
+  n200: at("200"), diff: at("Here's"),
+  p1: at("1 rupee"), vs: at("versus"), million: at("a million"), num1: at("Number 1"), contrast: at("Contrast"), p1end: end("spraying"),
+  pick: at("Pick 10"), pickEnd: end("this week"),
+  p2: at("Number 2"), speed: at("Speed"), fifty: at("first 50"), archived: at("archived"), p2end: end("archived"),
+  p3: at("And number 3"), proof: at("Proof"), project: at("One small project"), resume: at("a long resume"), p3end: end("resume"),
+  last: at("I replaced"), cta: R.voiceEnd() + 0.4,
+};
+window.REEL_DURATION = T.cta + 3.2;
+
+R.setup({
+  scenes: [
+    { id: "s_contrast", s: T.p1, e: T.p1end + 0.3, enter: "blur" },
+    { id: "s_speed", s: T.p2, e: T.p2end + 0.3, enter: "blur" },
+    { id: "s_proof", s: T.p3, e: T.p3end + 0.3, enter: "blur" },
+    { id: "s_cta", s: T.cta, e: 1e9, enter: "fade" },
+  ],
+  captions: { style: "chest" },
+});
+// footage docks into the window during each panel; captions ride along (inside the window, near the chin)
+const dock = [
+  { t: 0, ...FULL }, { t: T.p1 - 0.1, d: 0.6, ...PIP }, { t: T.p1end + 0.2, d: 0.5, ...FULL },
+  { t: T.p2 - 0.1, d: 0.6, ...PIP }, { t: T.p2end + 0.2, d: 0.5, ...FULL },
+  { t: T.p3 - 0.1, d: 0.6, ...PIP }, { t: T.p3end + 0.2, d: 0.5, ...FULL },
+  { t: T.cta - 0.05, d: 0.3, ...FULL, o: 0 },
+];
+
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t);
+  R.rect("footage", t, dock);
+  const docked = +document.getElementById("footage").style.top.replace("px", "") > 600;
+  const cap = document.getElementById("cap"), chip = document.getElementById("chip");
+  cap.style.top = (docked ? 1200 + 640 - 130 : 1230) + "px"; cap.style.fontSize = docked ? "34px" : "44px";
+  chip.style.top = (docked ? 1200 + 640 - 40 : 1358) + "px";
+  cap.classList.toggle("accent", docked);
+  R.zoom("frame", t, [[T.n200 - 0.05, T.diff, 1.12], [T.pick, T.pickEnd, 1.1, 50, 35], [T.last, T.cta, 1.15, 50, 38]], { sfx: false });
+  document.getElementById("gridbg").style.opacity = docked ? 1 : 0.35;
+  document.getElementById("vig").style.opacity = docked ? 0 : 1;
+  R.dots("dots", t, 0.9, 0.9, { cols: 24, rows: 42 });
+
+  // intro: the number pops on "200"
+  R.pop("n200", t, T.n200, { until: T.diff - 0.1 });
+
+  // panel 1: contrast
+  R.rise("ch1", t, T.p1 + 0.05, { d: 0.45, dy: -30 });
+  R.pop("c1a", t, T.p1 + 0.35);
+  R.pop("c1b", t, T.million - 0.1);
+  R.count("c1b", t, T.million, 0.9, 1000000, { fmt: x => "₹" + Math.round(x).toLocaleString("en-IN"), ding: true });
+  R.words("bw1", t, T.vs, { until: T.num1 });
+  R.words("bw2", t, T.contrast, { until: T.p1end + 0.2 });
+  document.getElementById("glow").style.opacity = 0.9 * R.prog(t, T.p1 + 0.5, 0.6) * (1 - R.prog(t, T.p1end, 0.4)) + 0.9 * R.prog(t, T.p2 + 0.5, 0.6) * (1 - R.prog(t, T.p2end, 0.4)) + 0.9 * R.prog(t, T.p3 + 0.5, 0.6) * (1 - R.prog(t, T.p3end, 0.4));
+
+  // floating card over full-screen footage
+  R.pop("g_pick", t, T.pick + 0.1, { from: 0.8, until: T.pickEnd + 0.2 });
+
+  // panel 2: speed
+  R.rise("ch2", t, T.p2 + 0.05, { d: 0.45, dy: -30 });
+  R.pop("c2a", t, T.fifty);
+  R.pop("c2b", t, T.archived - 0.1);
+  R.words("bw3", t, T.speed, { until: T.fifty - 0.1 });
+
+  // panel 3: proof
+  R.rise("ch3", t, T.p3 + 0.05, { d: 0.45, dy: -30 });
+  R.pop("g3a", t, T.project, { from: 0.85 });
+  R.pop("g3b", t, T.resume, { from: 0.85 });
+  R.words("bw4", t, T.proof, { until: T.project - 0.05 });
+
+  // end card
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 });
+  R.pop("cta2", t, T.cta + 0.5, { from: 0.7 });
+  R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>cinematic-type</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- cinematic-type: bold serif type, full-colour cards, cinematic B-roll cards. The footage
+   cuts away to full-bleed colour cards on key lines, then comes back. ---- */
+.colorcard{inset:0;background:var(--accent);display:grid;place-items:center;text-align:center;opacity:0}
+.colorcard.cream{background:var(--cream);color:var(--cream-ink)}
+.colorcard .t1{font:400 150px/.95 var(--serif);font-style:italic;letter-spacing:-5px;color:#fff}
+.colorcard.cream .t1{color:var(--cream-ink)}
+.colorcard .t2{font:600 44px var(--sans);margin-top:18px;letter-spacing:-.5px}
+.music{left:150px;top:690px;width:780px;padding:40px 40px 34px;background:#fff;border-radius:34px;box-shadow:0 40px 100px rgba(0,0,0,.35);color:#111;opacity:0}
+.music .art{width:300px;height:300px;margin:0 auto 34px;border-radius:14px;background:linear-gradient(135deg,#3a2d1d,#8a4e18 60%,#e8842a)}
+.music .n{font:800 40px var(--sans);letter-spacing:-1px}.music .a{font:500 26px var(--sans);color:#777;margin-top:6px}
+.music .bar{height:8px;border-radius:8px;background:#e5e5e5;margin-top:24px;overflow:hidden}.music .bar i{display:block;height:100%;width:30%;background:#111}
+.serif-line{left:60px;right:60px;top:220px;text-align:center;font:400 118px/1 var(--serif);font-style:italic;letter-spacing:-4px;color:#fff;text-shadow:0 10px 40px rgba(0,0,0,.6);opacity:0}
+.split-l{left:0;top:0;width:540px;height:1920px;background:var(--accent);display:grid;place-items:center;text-align:center;opacity:0}
+.split-l .t1{font:400 120px/.95 var(--serif);font-style:italic;letter-spacing:-4px;color:#fff}
+.split-l .t2{font:600 36px var(--sans);color:#fff;margin-top:14px}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="vig"></div>
+  <div class="serif-line" id="hook">200 applications.<br><span style="font-size:.7em;color:var(--accent)">zero replies.</span></div>
+
+  <!-- full-bleed colour cards (one per key line) -->
+  <div class="scene" id="s_card1"><div class="colorcard" id="cc1"><div><div class="t1">more reps</div><div class="t2">than you've already done.</div></div></div></div>
+  <div class="scene" id="s_card2"><div class="colorcard cream" id="cc2"><div><div class="t1">ten</div><div class="t2">companies. this week.</div></div></div></div>
+  <div class="scene" id="s_music"><div class="colorcard cream" id="cc3" style="opacity:1"></div>
+    <div class="music" id="mc"><div class="art"></div><div class="n">Speed</div><div class="a">first 50 · get read</div><div class="bar"><i id="mbar"></i></div></div>
+    <div class="serif-line" id="ml" style="top:1300px;font:800 64px var(--sans);letter-spacing:-2px;color:#111;text-shadow:none">archived,</div></div>
+  <div class="scene" id="s_split"><div class="split-l" id="sl"><div><div class="t1">proof</div><div class="t2">one project &gt; long resume</div></div></div></div>
+
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--accent)"></div>
+    <div class="cta" style="top:260px"><div class="l1" id="cta1" style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:120px;letter-spacing:-4px">Comment “CUT”</div><div class="l2" id="cta2" style="background:#fff;color:var(--accent-ink)">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:640px;width:600px;height:1066px;border-radius:40px;overflow:hidden;border:none"><img id="frame2"></div>
+  </div>
+
+  <div id="cap" class="big"></div><div class="chip" id="chip"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const T = {
+  hook: at("200"), hookEnd: end("nothing back"),
+  diff: at("Here's"), card1: at("1 rupee"), card1End: end("right one"),
+  pick: at("Pick 10"), pickEnd: end("this week"),
+  speed: at("Speed"), archived: at("archived"), speedEnd: end("archived"),
+  proof: at("Proof"), proofEnd: end("resume"),
+  last: at("I replaced"), cta: R.voiceEnd() + 0.4,
+};
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({
+  scenes: [
+    { id: "s_card1", s: T.card1, e: T.card1End + 0.25, enter: "zoom" },
+    { id: "s_card2", s: T.pick, e: T.pickEnd + 0.2, enter: "left" },
+    { id: "s_music", s: T.speed, e: T.speedEnd + 0.25, enter: "zoom" },
+    { id: "s_split", s: T.proof, e: T.proofEnd + 0.25, enter: "left" },
+    { id: "s_cta", s: T.cta, e: 1e9, enter: "fade" },
+  ],
+  // captions stay on the face; they hide while a full-bleed card is up (the card IS the text)
+  captions: { style: "chest", hide: [[T.card1, T.card1End + 0.25], [T.pick, T.pickEnd + 0.2], [T.speed, T.speedEnd + 0.25], [T.cta, 1e9]] },
+});
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t);
+  R.dots("dots", t, 0.8, 0.8);
+  // punch-ins on emphasis, slow creep the rest of the time
+  R.zoom("frame", t, [[T.hook, T.hookEnd, 1.14], [T.diff, T.card1, 1.08, 50, 35], [T.last, T.cta, 1.16, 50, 38]], { sfx: false, drift: 0.03 });
+  // during the split scene the footage is pushed to the right half
+  const sp = R.ease.inOut(R.prog(t, T.proof - 0.05, 0.5)) * (1 - R.ease.inOut(R.prog(t, T.proofEnd + 0.05, 0.4)));
+  const f = document.getElementById("footage"); f.style.left = 540 * sp + "px"; f.style.width = (1080 - 540 * sp) + "px";
+  document.getElementById("cap").style.left = (80 + 540 * sp) + "px";
+  document.getElementById("chip").style.left = (540 + 270 * sp) + "px";
+  document.getElementById("cap").style.fontSize = (56 - 20 * sp) + "px";
+  const fade = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1; f.style.opacity = fade;
+
+  R.words("hook", t, T.hook - 0.1, { stagger: 0.14, until: T.hookEnd + 0.1 });
+  R.pop("cc1", t, T.card1, { from: 1.08, sfx: false }); R.words(document.querySelector("#cc1 .t1"), t, T.card1 + 0.05, { stagger: 0.12 }); R.rise(document.querySelector("#cc1 .t2"), t, T.card1 + 0.45);
+  R.pop("cc2", t, T.pick, { from: 1.06, sfx: false }); R.words(document.querySelector("#cc2 .t1"), t, T.pick + 0.05); R.rise(document.querySelector("#cc2 .t2"), t, T.pick + 0.4);
+  R.pop("mc", t, T.speed + 0.05, { from: 0.85 }); document.getElementById("mbar").style.width = 30 + 60 * R.prog(t, T.speed, T.speedEnd - T.speed) + "%";
+  R.words("ml", t, T.archived, { stagger: 0.1 });
+  R.rise("sl", t, T.proof, { d: 0.45, dy: 0, extra: "" }); R.words(document.querySelector("#sl .t1"), t, T.proof + 0.1); R.rise(document.querySelector("#sl .t2"), t, T.proof + 0.5);
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

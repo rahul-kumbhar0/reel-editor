@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>image-cluster</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ---- image-cluster: metaphor images cluster above your head (2-3 at a time, slightly rotated,
+   polaroid/print feel), small caption bottom-left. Footage stays full frame; no cutouts needed. ---- */
+.cl{position:absolute;width:300px;height:300px;background-size:cover;background-position:center;background-color:#333;border:12px solid #fff;box-shadow:0 30px 60px rgba(0,0,0,.6);opacity:0}
+#cap{text-align:left;left:70px;right:420px;top:1500px;font:600 30px/1.3 var(--sans);text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.chip{display:none}
+</style></head>
+<body><div id="stage">
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="vig"></div>
+  <!-- cluster A (idea 1): three images; cluster B (idea 2) etc. Replace the img/ paths. -->
+  <div class="cl" id="a1" style="left:120px;top:230px;width:420px;height:300px;background-image:url(img/chess.jpg),linear-gradient(135deg,#ddd,#888)"></div>
+  <div class="cl" id="a2" style="left:600px;top:200px;width:300px;height:360px;background-image:url(img/yinyang.jpg),linear-gradient(135deg,#caa,#532)"></div>
+  <div class="cl" id="a3" style="left:380px;top:520px;width:420px;height:230px;background-image:url(img/creation.jpg),linear-gradient(135deg,#eee,#b97)"></div>
+  <div class="cl" id="b1" style="left:150px;top:230px;width:380px;height:280px;background-image:url(img/clock.jpg),linear-gradient(135deg,#223,#557)"></div>
+  <div class="cl" id="b2" style="left:560px;top:260px;width:360px;height:360px;background-image:url(img/runner.jpg),linear-gradient(135deg,#432,#a74)"></div>
+  <div class="cl" id="c1" style="left:200px;top:220px;width:680px;height:380px;background-image:url(img/blueprint.jpg),linear-gradient(135deg,#134,#28a)"></div>
+  <div class="scene" id="s_cta"><div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div class="l2" id="cta2">for a free editing template</div></div>
+    <div class="footage pip" id="ctapip" style="left:240px;top:620px;width:600px;height:1066px;border-radius:40px;overflow:hidden"><img id="frame2"></div>
+  </div>
+  <div id="cap"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 914, cut: null };
+const T = { a: at("1 rupee"), aEnd: end("spraying"), b: at("Number 2"), bEnd: end("archived"), c: at("And number 3"), cEnd: end("resume"), cta: R.voiceEnd() + 0.4 };
+window.REEL_DURATION = T.cta + 3.2;
+R.setup({ scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }], captions: { style: "chest", hide: [[T.cta, 1e9]] } });
+function cl(id, t, a, b, rot, dy) { const el = R.$(id); const p = R.ease.spring(R.prog(t, a, 0.5)), o = 1 - R.prog(t, b, 0.3); el.style.opacity = Math.min(1, p * 3) * o; el.style.transform = `translateY(${(1 - p) * dy}px) rotate(${rot}deg) scale(${0.9 + 0.1 * p})`; if (p > 0 && p < 1) R.cue("pop", a); }
+window.seek = async t => {
+  await R.footage(t);
+  document.getElementById("frame2").src = document.getElementById("frame").src;
+  R.frame(t); R.dots("dots", t, 0.8, 0.8);
+  R.zoom("frame", t, [], { drift: 0.03 });
+  cl("a1", t, T.a, T.aEnd, -6, 40); cl("a2", t, T.a + 0.35, T.aEnd, 5, 50); cl("a3", t, T.a + 0.7, T.aEnd, -3, 40);
+  cl("b1", t, T.b, T.bEnd, -4, 40); cl("b2", t, T.b + 0.4, T.bEnd, 6, 50);
+  cl("c1", t, T.c, T.cEnd, -2, 40);
+  document.getElementById("footage").style.opacity = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 }); R.pop("cta2", t, T.cta + 0.5, { from: 0.7 }); R.rise("ctapip", t, T.cta + 0.3, { dy: 60 });
+};
+</script></body></html>

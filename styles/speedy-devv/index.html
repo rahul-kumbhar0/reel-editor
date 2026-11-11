@@ -1,0 +1,193 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>speedy-devv</title>
+<link rel="stylesheet" href="engine/tokens.css">
+<style>
+/* ===========================================================================
+   speedy-devv — reverse-engineered from the @speedy_devv tech-explainer reels
+   (9 reference reels: AI co-op repo, tires, iPhone keyboard, PCA/embeddings,
+    touchscreen, DRAM prices, GitHub architecture, Binance hack, meta-reel).
+
+   Signature = full-bleed CINEMATIC 3D HERO (spotlit object on near-black) +
+   KARAOKE TOP caption (grey line, white spoken word, boxed keyword) + colored
+   PILL CALLOUTS with leader lines + MONO measurement TAGS + rolling ODOMETER
+   stat + tiny grey FOOTNOTE disclaimer + a persona CUTOUT anchored bottom-center
+   that re-poses per beat + "Comment KEYWORD" faux-IG end card.
+
+   Needs: cutouts (the persona sticker sequence as footage/ + cutout/). The hero
+   "footage" IS the rendered 3D b-roll per beat; the persona is the cutout layer.
+   Layout bands (1080x1920): caption y200 · definition y340 · pills y560-860 ·
+   stat y980 · footnote y1560 · persona bottom 0-720 · captions hidden on CTA.
+
+   Diagram colors (blue/green) are SEMANTIC callout colors, not brand; orange is
+   --accent. Swap --accent in engine/tokens.css; keep the two below per-style.
+   =========================================================================== */
+:root{ --kw-blue:#2E9BFF; --kw-green:#36C46A; }
+
+/* hero: full-bleed, spotlit, slightly dimmed so overlays read */
+#footage img{filter:brightness(.62) saturate(1.02) contrast(1.05)}
+.spot{inset:0;pointer-events:none;background:radial-gradient(ellipse 62% 48% at 50% 42%,rgba(255,255,255,.07),transparent 60%)}
+
+/* top karaoke caption (override chest position -> headline band) */
+#cap{top:200px;font:800 54px/1.24 var(--sans);letter-spacing:-1px;
+  text-shadow:0 2px 10px rgba(0,0,0,.75),0 0 30px rgba(0,0,0,.5)}
+#cap span.on{color:#fff}
+/* the boxed keyword accent that rides in the caption band */
+#kw{left:50%;transform:translateX(-50%);top:300px;display:inline-flex;align-items:center;gap:14px;
+  padding:10px 26px;background:#fff;color:#111;border-radius:16px;font:800 50px var(--sans);letter-spacing:-1px;
+  box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;z-index:32}
+#kw::before{content:"✦";color:var(--kw-blue);font-size:30px}
+
+/* persistent definition / acronym line under the caption */
+#def{left:80px;right:80px;top:340px;text-align:center;font:600 34px/1.3 var(--sans);color:var(--mute);
+  letter-spacing:-.3px;opacity:0}
+#def b{color:#fff}
+
+/* colored pill callouts with leader lines (PC1 blue / PC2 orange / PC3 green) */
+.kw{position:absolute;display:inline-flex;align-items:center;padding:12px 26px;border-radius:14px;
+  background:rgba(12,12,14,.78);border:2px solid var(--accent);color:#fff;font:700 40px var(--sans);
+  letter-spacing:-.5px;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;white-space:nowrap}
+.kw.b{border-color:var(--kw-blue)} .kw.g{border-color:var(--kw-green)} .kw.o{border-color:var(--accent)}
+.kw .lead{position:absolute;right:-120px;top:50%;height:2px;width:120px;transform-origin:left center;opacity:.8}
+.kw.b .lead{background:var(--kw-blue)} .kw.g .lead{background:var(--kw-green)} .kw.o .lead{background:var(--accent)}
+
+/* mono measurement tags (170 C / 350 PSI / 1 mm / 90 deg) */
+.tag{position:absolute;font:700 30px var(--mono);color:#fff;background:rgba(0,0,0,.45);
+  border:1px solid var(--line);border-radius:8px;padding:6px 14px;letter-spacing:.5px;opacity:0}
+
+/* rolling odometer stat (big number + unit) */
+#statwrap{left:0;right:0;top:980px;text-align:center;opacity:0;z-index:20}
+#statwrap b{font:800 150px/1 var(--sans);letter-spacing:-6px;color:#fff;
+  text-shadow:0 4px 30px rgba(0,0,0,.6)}
+#statwrap small{display:block;margin-top:6px;font:600 34px var(--sans);color:var(--mute)}
+
+/* tiny grey footnote disclaimer, bottom-left */
+#foot{left:70px;top:1560px;font:500 24px var(--sans);color:var(--dim);letter-spacing:.2px;opacity:0}
+
+/* persona sticker — cutout anchored bottom-center, re-posed per beat via footage swap */
+#persona{left:0;right:0;bottom:0;top:auto;height:760px;z-index:25;pointer-events:none}
+#persona #cut{position:absolute;inset:auto;bottom:0;left:50%;transform:translateX(-50%);
+  width:auto;height:100%;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(0,0,0,.55))}
+.bottom-shade{left:0;right:0;bottom:0;height:520px;background:linear-gradient(transparent,rgba(0,0,0,.55));z-index:24;pointer-events:none}
+
+/* ---- CTA: faux Instagram comments end card ---- */
+#s_cta .bg{position:absolute;inset:0;background:var(--bg)}
+.cta .l1{font:800 76px/1.1 var(--sans);letter-spacing:-2px;color:#fff}
+.cta .l2{margin-top:18px;font:700 50px var(--sans);background:var(--accent);color:#fff;padding:10px 30px;border-radius:14px}
+.ig{left:90px;top:640px;width:900px;background:#1c1c1e;border-radius:34px;padding:34px 36px;
+  box-shadow:0 50px 110px rgba(0,0,0,.6);opacity:0}
+.ig h4{text-align:center;color:#fff;font:700 38px var(--sans);margin-bottom:28px}
+.ig .row{display:flex;align-items:flex-start;gap:20px;margin-bottom:26px}
+.ig .av{width:64px;height:64px;border-radius:50%;background:#444;flex:none}
+.ig .row b{color:#fff;font:700 30px var(--sans)} .ig .row .cm{color:#fff;font:600 40px var(--sans);margin-top:4px}
+.ig .row small{color:var(--mute);font:500 26px var(--sans)}
+.ig .input{display:flex;align-items:center;gap:18px;border:2px solid #3a3a3c;border-radius:999px;padding:22px 30px;margin-top:8px}
+.ig .input span{color:var(--mute);font:500 36px var(--sans)}
+</style></head>
+<body><div id="stage">
+  <!-- cinematic 3D hero (per-beat render sequence) -->
+  <div class="footage" id="footage"><img id="frame"></div>
+  <div class="grid-bg" style="opacity:.35"></div>
+  <div class="spot"></div>
+  <div class="vig"></div>
+
+  <!-- definition line + diagram overlays -->
+  <div id="def">PCA = <b>P</b>rincipal <b>C</b>omponent <b>A</b>nalysis</div>
+
+  <div class="kw b" id="p1" style="left:120px;top:600px">PC 1 · 13.4%<span class="lead"></span></div>
+  <div class="kw o" id="p2" style="left:120px;top:700px">PC 2 · 6.9%<span class="lead"></span></div>
+  <div class="kw g" id="p3" style="left:120px;top:800px">PC 3 · 5.5%<span class="lead"></span></div>
+
+  <div class="tag" id="tag1" style="left:760px;top:620px">90°</div>
+  <div class="tag" id="tag2" style="left:700px;top:880px">all 10,000</div>
+
+  <!-- rolling odometer stat -->
+  <div id="statwrap"><b id="statn">0</b><small id="statu">of the variance kept</small></div>
+
+  <!-- footnote disclaimer -->
+  <div id="foot">1 square = 1 photo · illustrative</div>
+
+  <!-- persona sticker, bottom-center -->
+  <div class="bottom-shade"></div>
+  <div id="persona"><img id="cut"></div>
+
+  <!-- boxed keyword rides in the caption band -->
+  <div id="kw">difference</div>
+
+  <!-- CTA end card -->
+  <div class="scene" id="s_cta"><div class="bg"></div>
+    <div class="cta" style="top:300px"><div class="l1" id="cta1">Comment “CUT”</div><div><span class="l2" id="cta2">to get the template</span></div></div>
+    <div class="ig" id="ig">
+      <h4>Comments</h4>
+      <div class="row"><div class="av"></div><div><b>priya.k &nbsp;<small>2m</small></b><div class="cm" id="igkw">CUT</div><small>Reply</small></div></div>
+      <div class="input"><div class="av" style="width:56px;height:56px"></div><span>Add a comment for speedy_devv…</span></div>
+    </div>
+  </div>
+
+  <!-- engine chrome -->
+  <div id="cap"></div>
+  <div class="dotfield" id="dots" style="left:0;top:0;width:1080px;height:1920px"></div>
+  <div id="grain"></div>
+</div>
+<script src="captions.js"></script>
+<script src="engine/engine.js"></script>
+<script>
+const R = Reel, at = R.at, end = R.end, $ = R.$;
+window.FOOTAGE = { dir: "footage", fps: 30, count: 910, cut: "cutout" };
+
+const T = {
+  n200:   at("200"),
+  diff:   at("Here's"),
+  diffEnd:end("difference"),
+  versus: at("versus"),
+  oneEnd: end("one"),
+  num1:   at("Number 1"),
+  proof:  at("Proof"),
+  last:   at("I replaced"),
+  cta:    R.voiceEnd() + 0.4,
+};
+window.REEL_DURATION = T.cta + 3.4;
+
+R.setup({
+  scenes: [{ id: "s_cta", s: T.cta, e: 1e9, enter: "fade" }],
+  captions: { top: 200, style: "headline", hide: [[T.cta, 1e9]] },
+});
+
+window.seek = async t => {
+  await R.footage(t);
+  R.frame(t);
+  R.dots("dots", t, 0.8, 0.8);
+
+  // one gentle shared push-in on hero + persona so it reads as one 3D shot
+  R.zoom("frame", t, [[0, T.cta, 1.06]], { sfx: false, drift: 0.03 });
+  R.zoom("cut",   t, [[T.last, T.cta, 1.08]], { sfx: false, drift: 0.02 });
+
+  // definition line + boxed keyword in the caption band
+  R.rise("def", t, T.diff - 0.1, { dy: 24, until: T.proof });
+  R.pop("kw", t, T.diff + 0.15, { from: 0.8, until: T.diffEnd + 0.3 });
+
+  // colored pill callouts drop in staggered, leader lines after
+  R.pop("p1", t, T.n200, { from: 0.85, until: T.versus });
+  R.pop("p2", t, T.n200 + 0.18, { from: 0.85, until: T.versus });
+  R.pop("p3", t, T.n200 + 0.36, { from: 0.85, until: T.versus });
+
+  // mono measurement tags
+  R.pop("tag1", t, T.n200 + 0.1, { from: 0.6, until: T.versus });
+  R.pop("tag2", t, T.n200 + 0.3, { from: 0.6, until: T.versus });
+
+  // rolling odometer: count up on the "versus a million" line, hold, fade
+  R.pop("statwrap", t, T.versus - 0.1, { from: 0.9, until: T.num1 });
+  R.count("statn", t, T.versus, 1.1, 1000000, { ding: true });
+
+  // footnote disclaimer sits under the whole thing
+  R.rise("foot", t, T.n200, { dy: 14, until: T.num1 });
+
+  // persona + hero fade out at the CTA
+  const fade = t >= T.cta - 0.3 ? 1 - R.prog(t, T.cta - 0.3, 0.3) : 1;
+  $("persona").style.opacity = fade; $("footage").style.opacity = fade;
+
+  // CTA: comment sheet + big line
+  R.words("cta1", t, T.cta + 0.1, { stagger: 0.12 });
+  R.pop("cta2", t, T.cta + 0.5, { from: 0.7 });
+  R.rise("ig", t, T.cta + 0.35, { dy: 70 });
+};
+</script></body></html>
